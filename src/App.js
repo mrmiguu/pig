@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import Roll from './Roll'
+import styles from './App.module.scss'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+const dice = ['4','6','8','10','00','12','20']
+
+function App() {
+  const [ i, setI ] = useState(0)
+  const [ d, setD ] = useState(dice[i])
+
+  return (
+    <div className={styles.app}>
+      <Roll
+        d={d}
+
+        onEnd={r => {
+          console.log(`d${dice[i]} roll=${r}`)
+          setD(dice[(i+1)%dice.length])
+          setI(i+1)
+        }}
+        
+      />
+    </div>
+  )
 }
 
-export default App;
+export default App
