@@ -1,5 +1,11 @@
 import React, { useState } from 'react'
 import Chip from '@material-ui/core/Chip'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import Link from '@material-ui/core/Link'
+import GMIcon from './GMIcon'
 import d4 from './assets/d4.png'
 import d6 from './assets/d6.png'
 import d8 from './assets/d8.png'
@@ -19,8 +25,6 @@ const die = {
   '90' : d90,
 }
 
-const isGM = true
-
 const gmChoices = {
   '4'  : ['1', '2', '3', '4'],
   '6'  : ['1', '2', '3', '4', '5', '6'],
@@ -31,24 +35,36 @@ const gmChoices = {
   '90' : ['00', '10', '20', '30', '40', '50', '60', '70', '80', '90'],
 }
 
-function Roll({ dice, onEnd }) {
+const amzDice = 'https://www.amazon.com/s?k=7-die+dice+set'
+
+function Roll({ dice, onEnd, isGM }) {
   const [ roll, setRoll ] = useState([])
   const [ cur, setCur ] = useState(dice[0])
+  const [ remind, setRemind ] = useState(false)
 
   return (
     <div className={styles.roll}>
     
       {
         !isGM? (
-          <Chip
-            className={styles.label}
-            label="ROLL"
-            variant="outlined"
-          />
-        ) : null
+          <Dialog
+            open={remind}
+            onClick={() => setRemind(false)}
+          >
+            <DialogTitle>Roll Your Dice!</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Using your own <Link href={amzDice} target="_blank" rel="noopener">7-die dice set</Link>,
+                roll the displayed combination and read them out for your GM.
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <GMIcon />
+        )
       }
     
-      <div className={styles.die}>
+      <div className={styles.dice}>
         {
           dice.map((d, i) =>
             <img
@@ -56,6 +72,7 @@ function Roll({ dice, onEnd }) {
               className={isGM? i === roll.length? styles.gmCur : styles.gmDie : undefined}
               src={die[d]}
               alt="die"
+              onClick={() => !isGM && setRemind(true)}
             />
           )
         }

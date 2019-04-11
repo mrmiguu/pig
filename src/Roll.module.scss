@@ -13,6 +13,8 @@
   
   font-size: calc(16px + 2vmin);
   color: black;
+
+  // border: solid 1px red;
 }
 
 .label {
@@ -23,30 +25,39 @@
   user-select: none;
 }
 
-.die {
-  pointer-events: none;
+.dice {
+  // pointer-events: none;
   user-select: none;
 
   // border: solid 1px red;
 }
 
-.die > * {
+.dice > * {
   height: 20vmin;
   margin: 5vmin;
+  filter: grayscale(100%);
 
   vertical-align: middle;
-  animation: spin infinite 20s linear;
+  animation: spin infinite 60s linear;
 
   // border: solid 1px red;
 }
 
 .gmDie {
   height: 15vmin;
+  
+  // border: solid 1px red;
 }
 
 .gmCur {
   height: 30vmin;
+
+  // border: solid 1px red;
 }
+
+// .nums {
+//   border: solid 1px red;
+// }
 
 .nums > * {
   margin: 2vmin;
