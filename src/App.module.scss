@@ -14,3 +14,9 @@
   font-size: calc(16px + 2vmin);
   color: black;
 }
+
+.hold {
+  position: absolute !important;
+  // right: 2vmin;
+  bottom: 2%;
+}

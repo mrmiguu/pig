@@ -1,10 +1,9 @@
 .gmIcon {
-  font-weight: bold;
-
   // border: solid 1px red;
 }
 
 .gm {
+  font-weight: 900;
   font-size: 6vmin;
 }
 
@@ -15,26 +14,26 @@
 
 .g {
   display: inline-block;
-  animation: gBob infinite 1s linear;
+  animation: gBob infinite 0.9s linear;
 }
 
 .m {
   display: inline-block;
-  animation: mBob infinite 1s linear;
+  animation: mBob infinite 0.9s linear;
 }
 
 @keyframes gBob {
-  0% { transform: translateY(0px); }
-  25% { transform: translateY(-3px); }
-  50% { transform: translateY(0px); }
-  75% { transform: translateY(3px); }
-  100% { transform: translateY(0px); }
+  0% { transform: translateY(0vmin); }
+  25% { transform: translateY(-0.5vmin); }
+  50% { transform: translateY(0vmin); }
+  75% { transform: translateY(0.5vmin); }
+  100% { transform: translateY(0vmin); }
 }
 
 @keyframes mBob {
-  0% { transform: translateY(-3px); }
-  25% { transform: translateY(0px); }
-  50% { transform: translateY(3px); }
-  75% { transform: translateY(0px); }
-  100% { transform: translateY(-3px); }
+  0% { transform: translateY(-0.5vmin); }
+  25% { transform: translateY(0vmin); }
+  50% { transform: translateY(0.5vmin); }
+  75% { transform: translateY(0vmin); }
+  100% { transform: translateY(-0.5vmin); }
 }
