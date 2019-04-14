@@ -15,6 +15,27 @@
   color: black;
 }
 
+.scoreBoard {
+  position: absolute !important;
+  top: 2vmin;
+  right: 2vmin;
+
+  // border: solid 1px red;
+}
+.ourScore {
+  display: inline-block;
+}
+.ourScore > * {
+  font-size: 5vmin !important;
+}
+.theirScore {
+  display: inline-block;
+  margin-left: 2vmin;
+}
+.theirScore > * {
+  font-size: 5vmin !important;
+}
+
 .hold {
   position: absolute !important;
   // right: 2vmin;

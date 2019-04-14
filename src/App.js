@@ -1,12 +1,24 @@
-import React, { useState } from 'react'
+import React from 'react'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import Link from '@material-ui/core/Link'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useDocument } from 'react-firebase-hooks/firestore'
 import Roll from './Roll'
+import { pig } from './help'
 import styles from './App.module.scss'
+
+const pigRules = 'https://en.wikipedia.org/wiki/Pig_(dice_game)'
  
 var config = {
   apiKey: "AIzaSyCKE8XTWiaGoLE876gg_fTMMj0yDLV7L2Q",
@@ -94,21 +106,20 @@ function Match({ us, them }) {
 
   const dice = ['6']
 
-  const theirRolls = their.rolls || {}
-  const ourRolls = our.rolls || {}
-  const theirLast = theirRolls[Object.keys(theirRolls).slice(-1)] || []
-  const ourLast = ourRolls[Object.keys(ourRolls).slice(-1)] || []
-  const theirLatest = (Object.keys(theirRolls).sort().slice(-1)||[])[0] || ''
-  const ourLatest = (Object.keys(ourRolls).sort().slice(-1)||[])[0] || ''
+  const theirRollData = their.rolls || {}
+  const ourRollData = our.rolls || {}
+  const theirLast = theirRollData[Object.keys(theirRollData).slice(-1)] || []
+  const ourLast = ourRollData[Object.keys(ourRollData).slice(-1)] || []
+  const theirLatest = (Object.keys(theirRollData).sort().slice(-1)||[])[0] || ''
+  const ourLatest = (Object.keys(ourRollData).sort().slice(-1)||[])[0] || ''
 
   console.log(`theirLatest:\n\t${JSON.stringify(theirLatest)}`)
   console.log(`ourLatest:\n\t${JSON.stringify(ourLatest)}`)
   console.log(`theirLatest > ourLatest (${theirLatest > ourLatest})`)
 
-  const allStarting = !their.rolls && !our.rolls
   const theyreStarting = theirLast[0] === '1' || theirLast[0] === '-'
   
-  const isGM = allStarting?
+  const isGM = !their.rolls && !our.rolls?
     their.opponent < our.opponent
     : theirLatest > ourLatest?
       theyreStarting?
@@ -118,8 +129,47 @@ function Match({ us, them }) {
             true
             : false
   
+  const ourRolls = Object.keys(ourRollData)
+    .map(t => ourRollData[t][0])
+  const theirRolls = Object.keys(theirRollData)
+    .map(t => theirRollData[t][0])
+  
+  const ourScore = pig(ourRolls)
+  const theirScore = pig(theirRolls)
+
+  console.log(`ourScore: ${ourScore}`)
+  console.log(`theirScore: ${theirScore}`)
+  
   return (
     <div className={styles.app}>
+
+      {
+        ourScore >= 100? (
+          <Dialog
+            open
+          >
+            <DialogTitle>You Win!</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                The first to 100 points wins. You scored {ourScore} points, which makes you the winner.
+                Feel free to <Link href={pigRules} target="_blank" rel="noopener">learn more</Link> about the dice game Pig.
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+        ) : theirScore >= 100? (
+          <Dialog
+            open
+          >
+            <DialogTitle>You Lose...</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                The first to 100 points wins. Your opponent scored {theirScore} points, which makes them the winner.
+                Feel free to <Link href={pigRules} target="_blank" rel="noopener">learn more</Link> about the dice game Pig.
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+        ) : null
+      }
 
       <Roll
         dice={dice}
@@ -128,27 +178,39 @@ function Match({ us, them }) {
           console.log(`dice=${dice} roll=${r}`)
           
           them.ref.update({
-            rolls: {...theirRolls, [Date.now()]: r}
+            rolls: {...theirRollData, [Date.now()]: r}
           })
         }}
       />
 
+      <Card className={styles.scoreBoard}>
+        <CardContent>
+
+          <Paper className={styles.ourScore} elevation={1}>
+            <Typography>{ourScore}</Typography>
+          </Paper>
+
+          <Paper className={styles.theirScore} elevation={1}>
+            <Typography>{theirScore}</Typography>
+          </Paper>
+
+        </CardContent>
+      </Card>
+
       {
-        !isGM || (theyreStarting || !their.rolls)?
-          null
-        : (
+        isGM && !theyreStarting && their.rolls? (
           <Button
             className={styles.hold}
             variant="contained"
             onClick={() => {
               them.ref.update({
-                rolls: {...theirRolls, [Date.now()]: ['-']}
+                rolls: {...theirRollData, [Date.now()]: ['-']}
               })
             }}
           >
             Hold
           </Button>
-        )
+        ) : null
       }
 
     </div>
