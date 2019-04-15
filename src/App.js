@@ -9,6 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import Link from '@material-ui/core/Link'
+import Chip from '@material-ui/core/Chip'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
@@ -88,7 +89,7 @@ function Them({ uid, us }) {
   if (!them) {
     return <pre>No document found for opponent</pre>
   }
-  
+
   const their = them.data()
   
   if (their.opponent !== uid) {
@@ -139,6 +140,21 @@ function Match({ us, them }) {
 
   console.log(`ourScore: ${ourScore}`)
   console.log(`theirScore: ${theirScore}`)
+
+  const lastRoll = theirLatest > ourLatest? theirLast[0] : ourLast[0]
+  const last = theirLatest > ourLatest? them : us
+  const lastRollData = theirLatest > ourLatest? theirRollData : ourRollData
+  const lastTime = theirLatest > ourLatest? theirLatest : ourLatest
+
+  const undo = () => {
+    delete lastRollData[lastTime]
+    
+    last.ref.update({
+      rolls: Object.keys(lastRollData).length?
+        lastRollData
+        : firebase.firestore.FieldValue.delete()
+    })
+  }
   
   return (
     <div className={styles.app}>
@@ -196,6 +212,16 @@ function Match({ us, them }) {
 
         </CardContent>
       </Card>
+
+      {
+        lastRoll? (
+          <Chip
+            className={styles.undo}
+            label={lastRoll === '-'? 'HOLD' : lastRoll}
+            onDelete={undo}
+          />
+        ) : null
+      }
 
       {
         isGM && !theyreStarting && their.rolls? (

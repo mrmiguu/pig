@@ -5,20 +5,29 @@
 .gm {
   font-weight: 900;
   font-size: 6vmin;
+
+  // border: solid 1px red;
 }
 
 .gm > * {
   color: white;
+  width: 10vmin;
   filter: drop-shadow(0 0 1.3vmin darkmagenta);
+
+  // border: solid 1px red;
 }
 
 .g {
   display: inline-block;
+  position: relative;
+  left: 2.5vmin;
   animation: gBob infinite 0.9s linear;
 }
 
 .m {
   display: inline-block;
+  position: relative;
+  right: 2.5vmin;
   animation: mBob infinite 0.9s linear;
 }
 
