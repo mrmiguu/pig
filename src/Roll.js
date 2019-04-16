@@ -5,6 +5,8 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import Link from '@material-ui/core/Link'
+import Snackbar from '@material-ui/core/Snackbar'
+import SnackbarContent from '@material-ui/core/SnackbarContent'
 import GMIcon from './GMIcon'
 import d4 from './assets/d4.png'
 import d6 from './assets/d6.png'
@@ -46,7 +48,26 @@ function Roll({ dice, onEnd, isGM }) {
     <div className={styles.roll}>
     
       {
-        !isGM? (
+        !isGM? <>
+
+          <Snackbar
+            anchorOrigin={{
+              vertical   : 'top',
+              horizontal : 'left',
+            }}
+            open
+          >
+            <SnackbarContent
+              className={styles.rollAlert}
+              aria-describedby="roll-your-dice"
+              message={
+                <span id="roll-your-dice">
+                  Roll Your Dice!
+                </span>
+              }
+            />
+          </Snackbar>
+          
           <Dialog
             open={remind}
             onClick={() => setRemind(false)}
@@ -59,9 +80,27 @@ function Roll({ dice, onEnd, isGM }) {
               </DialogContentText>
             </DialogContent>
           </Dialog>
-        ) : (
-          <GMIcon />
+
+        </> : (
+
+          <Dialog
+            open={remind}
+            onClick={() => setRemind(false)}
+          >
+            <DialogTitle>Record Their Roll</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Using their own <Link href={amzDice} target="_blank" rel="noopener">7-die dice set</Link>,
+                the other player will read out for you their roll of the displayed combination.
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+
         )
+      }
+    
+      {
+        isGM? <GMIcon /> : null
       }
     
       <div className={styles.dice}>
@@ -72,7 +111,7 @@ function Roll({ dice, onEnd, isGM }) {
               className={isGM? i === roll.length? styles.gmCur : styles.gmDie : undefined}
               src={die[d]}
               alt="die"
-              onClick={() => !isGM && setRemind(true)}
+              onClick={() => setRemind(true)}
             />
           )
         }
